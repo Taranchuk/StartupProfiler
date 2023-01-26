@@ -67,6 +67,7 @@
     <Compile Include="HarmonyPatches\LongEventHandler_UpdateCurrentSynchronousEvent_Patch.cs" />
     <Compile Include="HarmonyPatches\ModContentPack_LoadDefs_Patch.cs" />
     <Compile Include="HarmonyPatches\ModContentPack_LoadPatches_Patch.cs" />
+    <Compile Include="HarmonyPatches\ThreadLocalDeepProfiler_Output_Patch.cs" />
     <Compile Include="ModImpactData.cs" />
     <Compile Include="ModStartupReport.cs" />
     <Compile Include="HarmonyPatches\PatchOperation_Apply_Patch.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="StartupImpactProfiling.cs" />
     <Compile Include="HarmonyPatches\StaticConstructorOnStartupUtility_CallAll_Patch.cs" />
     <Compile Include="HarmonyPatches\ThreadLocalDeepProfiler_AppendStringRecursive_Patch.cs" />
+    <Compile Include="ThreadLocalDeepProfiler_End_Patch.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -20,6 +20,11 @@ namespace ModStartupImpactStats
         {
             oldVerbose = Prefs.LogVerbose;
             Prefs.LogVerbose = true;
+            if (!oldVerbose)
+            {
+                DeepProfiler.Start("InitializeMods()");
+                DeepProfiler.Start(string.Concat("Loading ", typeof(ModStartupImpactStatsMod), " mod class"));
+            }
             Instance = this;
             harmony = new Harmony("ModStartupImpactStats.MyPatches");
             harmony.PatchAll();

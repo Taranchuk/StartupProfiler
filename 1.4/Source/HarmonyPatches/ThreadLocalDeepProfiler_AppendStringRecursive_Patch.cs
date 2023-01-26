@@ -9,7 +9,6 @@ using static Verse.ThreadLocalDeepProfiler;
 
 namespace ModStartupImpactStats
 {
-
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), "AppendStringRecursive")]
     public static class ThreadLocalDeepProfiler_AppendStringRecursive_Patch
     {
@@ -25,7 +24,7 @@ namespace ModStartupImpactStats
         static Regex modClassRegex2 = new Regex(@"([^ ]+) -> [a-z]", RegexOptions.IgnoreCase);
 
         public static HashSet<string> processedLines = new HashSet<string>();
-        public static void Postfix(ref StringBuilder sb, string label, ref List<Watcher> children)
+        public static void Postfix(ref StringBuilder sb, string label, List<Watcher> children)
         {
             string[] delim = { Environment.NewLine, "\n" };
             string[] lines = sb.ToString().Split(delim, StringSplitOptions.None);
