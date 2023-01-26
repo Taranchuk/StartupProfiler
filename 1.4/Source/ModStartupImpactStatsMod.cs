@@ -14,8 +14,11 @@ namespace ModStartupImpactStats
         public static Stopwatch stopwatch;
         public static Harmony harmony;
         public static ModStartupImpactStatsMod Instance;
+
+        public static bool oldVerbose;
         public ModStartupImpactStatsMod(ModContentPack pack) : base(pack)
         {
+            oldVerbose = Prefs.LogVerbose;
             Prefs.LogVerbose = true;
             Instance = this;
             harmony = new Harmony("ModStartupImpactStats.MyPatches");

@@ -44,7 +44,7 @@ namespace ModStartupImpactStats
             {
                 if (targetMethod != null)
                 {
-                    Log.Message(targetMethod.DeclaringType.FullName + "." + targetMethod.Name + " - " + string.Join(", ", targetMethod.GetParameters().Select(x => x.ParameterType)) + " took " + totalTimeInSeconds + ", run count: " + count);
+                    Log.Message(targetMethod.FullMethodName() + " - " + string.Join(", ", targetMethod.GetParameters().Select(x => x.ParameterType)) + " took " + totalTimeInSeconds + ", run count: " + count);
                 }
                 else
                 {

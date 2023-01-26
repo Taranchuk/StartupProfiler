@@ -20,6 +20,7 @@ namespace ModStartupImpactStats
         private static void Postfix()
         {
             LogStartupImpact();
+            Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
         }
 
         private static void LogStartupImpact()
@@ -39,7 +40,7 @@ namespace ModStartupImpactStats
                             }
                             else
                             {
-                                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "Harmony patch (" + registeredMethod.DeclaringType.FullName + "." + registeredMethod.Name + ")", watch.totalTimeInSeconds);
+                                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "Harmony patch (" + registeredMethod.FullMethodName() + ")", watch.totalTimeInSeconds);
                             }
                         }
                     }
@@ -54,14 +55,14 @@ namespace ModStartupImpactStats
             if (ModStartupImpactStatsMod.stopwatch != null)
             {
                 ModStartupImpactStatsMod.stopwatch.Stop();
-                mainMessage.AppendLine("Mods: " + ModLister.AllInstalledMods.Where(x => x.Active).Count() + " - STARTUP TIME TOOK " + ModStartupImpactStatsMod.stopwatch.Elapsed.ToString(@"m\:ss") + " - " + DateTime.Now.ToString());
+                mainMessage.AppendLine("Mods installed: " + ModLister.AllInstalledMods.Where(x => x.Active).Count() + " - total startup time: " + ModStartupImpactStatsMod.stopwatch.Elapsed.ToString(@"m\:ss"));
                 if (Prefs.LogVerbose)
                 {
                     var allCategoryImpacts = new Dictionary<string, float>();
                     foreach (var modImpact in ModImpactData.modsImpact.OrderByDescending(x => x.Value.TotalImpactTime()))
                     {
                         var impactTime = modImpact.Value.TotalImpactTime();
-                        if (impactTime > 0.1f)
+                        if (impactTime > ModImpactData.MinModImpactLogging)
                         {
                             var packageId = modImpact.Key;
                             var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.PackageIdPlayerFacing.ToLower() == packageId.ToLower());
@@ -95,7 +96,7 @@ namespace ModStartupImpactStats
                     {
                         mainMessage.AppendLine("Category " + category.Key + " took " + (category.Value).ToStringDecimalIfSmall() + "s");
                     }
-                    mainMessage.AppendLine("Total impact: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
+                    mainMessage.AppendLine("Mod impact measured: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
                     //DisableXMlOnlyMods(mess);
                 }
                 var modReport = "Mod info report: \n" + mainMessage.ToString() + "\n" + secondaryMessage.ToString();

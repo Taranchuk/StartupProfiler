@@ -10,6 +10,10 @@ namespace ModStartupImpactStats
 {
     public static class StartupImpactProfiling
     {
+        public static string FullMethodName(this MethodBase methodInfo)
+        {
+            return methodInfo.DeclaringType.FullName + "." + methodInfo.Name;
+        }
         public static bool CanBePatched(this MethodBase mi)
         {
             if (mi.HasMethodBody() && mi.DeclaringType.IsConstructedGenericType is false &&
