@@ -18,10 +18,10 @@ namespace ModStartupImpactStats
         {
             Prefs.LogVerbose = true;
             Instance = this;
-            stopwatch = new Stopwatch();
-            stopwatch.Start();
             harmony = new Harmony("ModStartupImpactStats.MyPatches");
             harmony.PatchAll();
+            stopwatch = new Stopwatch();
+            stopwatch.Start();
             Log.TryOpenLogWindow();
         }
     }

@@ -19,10 +19,10 @@ namespace ModStartupImpactStats
         public static StringBuilder secondaryMessage = new StringBuilder();
         private static void Postfix()
         {
-            LogStopwatches();
+            LogStartupImpact();
         }
 
-        private static void LogStopwatches()
+        private static void LogStartupImpact()
         {
             if (StartupImpactProfiling.stopwatches.Any())
             {
@@ -98,8 +98,8 @@ namespace ModStartupImpactStats
                     mainMessage.AppendLine("Total impact: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
                     //DisableXMlOnlyMods(mess);
                 }
-
-                Log.Warning("Mod info report: \n" + mainMessage.ToString() + "\n" + secondaryMessage.ToString());
+                var modReport = "Mod info report: \n" + mainMessage.ToString() + "\n" + secondaryMessage.ToString();
+                Log.Warning(modReport);
             }
         }
     }
