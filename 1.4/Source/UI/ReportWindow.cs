@@ -14,7 +14,6 @@ namespace StartupProfiler
 	{
 		private const float RightWindowRatio = 0.65f;
 		private const float ModEntryHeight = 25;
-		private const float ModEntrySpacing = 2;
 
 		private static readonly Color ColorOdd = new Color(0.2f, 0.2f, 0.2f);
 		public static Texture2D MenuIcon = ContentFinder<Texture2D>.Get("StartupImpactStats_MenuIcon");
@@ -35,8 +34,9 @@ namespace StartupProfiler
 			closeOnCancel = true;
 			doCloseX = true;
 			//Order is non-deterministic. Needs to be reordered based on impact times
-			cachedModDatas = ModStartupReport.Summary.AllEntries.OrderByDescending(modImpactData => modImpactData.TotalImpactTime).ToList(); 
-			RecacheHeight();
+			cachedModDatas = ModStartupReport.Summary.AllEntries.Where(modImpactData => modImpactData.TotalImpactTime >= ModImpactData.MinModImpactLogging && !modImpactData.mod.IsOfficialMod)
+																.OrderByDescending(modImpactData => modImpactData.TotalImpactTime).ToList();
+			RecacheModListHeight();
 		}
 
 		public override Vector2 InitialSize => new Vector2(1024, 768);
@@ -66,20 +66,21 @@ namespace StartupProfiler
 		{
 			Rect listerRect = MenuScrollView(rect, ModListHeight, ref modList_ScrollPos);
 			{
+				for (int i = 0; i < cachedModDatas.Count; i++)
+				{
+					ModImpactData modImpactData = cachedModDatas[i];
+
+					Rect entryRect = new Rect(listerRect.x, listerRect.y + i * ModEntryHeight, listerRect.width, ModEntryHeight);
+					if (i % 2 != 0)
+					{
+						//Draw colored background every other entry
+						Widgets.DrawBoxSolid(entryRect, ColorOdd);
+					}
+					Draw(entryRect, modImpactData, width);
+				}
 				modLister.Begin(listerRect);
 				{
-					for (int i = 0; i < cachedModDatas.Count; i++)
-					{
-						ModImpactData modImpactData = cachedModDatas[i];
-
-						Rect entryRect = modLister.GetRect(ModEntryHeight);
-						if (i % 2 != 0)
-						{
-							//Draw colored background every other entry
-							Widgets.DrawBoxSolid(entryRect, ColorOdd);
-						}
-						Draw(entryRect, modImpactData, width);
-					}
+					
 				}
 				modLister.End();
 			}
@@ -133,21 +134,18 @@ namespace StartupProfiler
 		private void Draw(Rect rect, ModImpactData modImpactData, float width)
 		{
 			TextAnchor anchor = Text.Anchor;
-			Rect buttonRect = rect.ContractedBy(2);
-			Widgets.BeginGroup(buttonRect);
 			{
 				Text.Anchor = TextAnchor.MiddleLeft;
-
+				Rect buttonRect = rect.ContractedBy(2);
 				string label = $"({modImpactData.TotalImpactTime:F1}s) {modImpactData.mod.Name}";
-				Widgets.Label(buttonRect.AtZero(), label);
-				if (Widgets.ButtonInvisible(buttonRect.AtZero()))
+				Widgets.Label(buttonRect, label);
+				if (Widgets.ButtonInvisible(buttonRect))
 				{
 					SoundDefOf.Click.PlayOneShotOnCamera();
 					selectedMod = modImpactData;
 					RegenerateReport(width);
 				}
 			}
-			Widgets.EndGroup();
 			Text.Anchor = anchor;
 		}
 
@@ -182,9 +180,10 @@ namespace StartupProfiler
 			RecacheReportHeight(width);
 		}
 
-		private void RecacheHeight()
+		private void RecacheModListHeight()
 		{
-			ModListHeight = ModStartupReport.Summary.Count * ModListHeight;
+			ModListHeight = cachedModDatas.Count * ModEntryHeight;
+			Log.Message($"Height: {ModListHeight} = {cachedModDatas.Count} * {ModEntryHeight}");
 		}
 
 		private void RecacheReportHeight(float width)
