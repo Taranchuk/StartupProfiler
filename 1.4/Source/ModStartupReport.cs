@@ -11,10 +11,10 @@ using Verse;
 
 namespace ModStartupImpactStats
 {
-
     [HarmonyPatch(typeof(EditWindow_Log), MethodType.Constructor)]
     internal static class ModStartupReport
     {
+        public static bool initialized = false;
         public static StringBuilder mainMessage = new StringBuilder();
         public static StringBuilder secondaryMessage = new StringBuilder();
 
@@ -22,8 +22,12 @@ namespace ModStartupImpactStats
 
         private static void Postfix()
         {
-            LogStartupImpact();
-            Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
+            if (!initialized)
+            {
+                initialized = true;
+                LogStartupImpact();
+                Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
+            }
         }
 
         private static void LogStartupImpact()
@@ -48,7 +52,7 @@ namespace ModStartupImpactStats
                         }
                     }
                 }
-
+                HarmonyPatches_Profile.registeredMethods.Clear();
                 foreach ((_, StopwatchData stopwatchData) in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
                 {
                     stopwatchData.LogTime();
@@ -91,18 +95,18 @@ namespace ModStartupImpactStats
                             }
                         }
 
-                        foreach (var category in modImpact.Value.impactByCategories)
+                    foreach (var category in modImpact.Value.impactByCategories)
+                    {
+                        if (allCategoryImpacts.ContainsKey(category.Key))
                         {
-                            if (allCategoryImpacts.ContainsKey(category.Key))
-                            {
-                                allCategoryImpacts[category.Key] += category.Value.Sum(x => x.Value);
-                            }
-                            else
-                            {
-                                allCategoryImpacts[category.Key] = category.Value.Sum(x => x.Value);
-                            }
+                            allCategoryImpacts[category.Key] += category.Value.Sum(x => x.Value);
+                        }
+                        else
+                        {
+                            allCategoryImpacts[category.Key] = category.Value.Sum(x => x.Value);
                         }
                     }
+                }
 
                     foreach (var category in allCategoryImpacts.OrderByDescending(x => x.Value))
                     {
