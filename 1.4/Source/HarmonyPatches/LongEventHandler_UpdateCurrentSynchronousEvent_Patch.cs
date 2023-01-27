@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(LongEventHandler), "UpdateCurrentSynchronousEvent")]
     public static class LongEventHandler_UpdateCurrentSynchronousEvent_Patch

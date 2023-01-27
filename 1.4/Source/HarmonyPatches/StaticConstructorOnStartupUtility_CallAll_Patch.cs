@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(StaticConstructorOnStartupUtility), "CallAll")]
     public static class StaticConstructorOnStartupUtility_CallAll_Patch

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(PatchOperation), "Apply")]
     public static class PatchOperation_Apply_Patch

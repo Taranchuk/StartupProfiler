@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(ModContentPack), "LoadPatches")]
     public static class ModContentPack_LoadPatches_Patch

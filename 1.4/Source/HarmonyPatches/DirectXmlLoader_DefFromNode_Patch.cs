@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(DirectXmlLoader), "DefFromNode")]
     public static class DirectXmlLoader_DefFromNode_Patch

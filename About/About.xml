@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Mod Startup Impact Stats</name>
+	<name>Startup Profiler</name>
 	<author>Taranchuk</author>
-	<packageId>Taranchuk.ModStartupImpactStats</packageId>
+	<packageId>Taranchuk.StartupProfiler</packageId>
 	<description>Profiles mods upon startup. Most be loaded first and after harmony for better result.</description>
 	
 	<supportedVersions>

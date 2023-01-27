@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     public static class StartupImpactProfiling
     {
@@ -65,7 +65,7 @@ namespace ModStartupImpactStats
                     }
                     else
                     {
-                        ModStartupImpactStatsMod.harmony.Patch(methodInfo, prefix: profilePrefix, postfix: profilePostfix);
+                        StartupProfilerMod.harmony.Patch(methodInfo, prefix: profilePrefix, postfix: profilePostfix);
                     }
                 }
                 catch (Exception ex)

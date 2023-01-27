@@ -9,7 +9,7 @@ using System.Xml;
 using UnityEngine;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(EditWindow_Log), MethodType.Constructor)]
     internal static class ModStartupReport
@@ -26,7 +26,7 @@ namespace ModStartupImpactStats
             {
                 initialized = true;
                 LogStartupImpact();
-                Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
+                Prefs.LogVerbose = StartupProfilerMod.oldVerbose;
             }
         }
 
@@ -59,10 +59,10 @@ namespace ModStartupImpactStats
                 }
             }
             
-            if (ModStartupImpactStatsMod.stopwatch != null)
+            if (StartupProfilerMod.stopwatch != null)
             {
-                ModStartupImpactStatsMod.stopwatch.Stop();
-                Summary.TotalElapsed = ModStartupImpactStatsMod.stopwatch.Elapsed;
+                StartupProfilerMod.stopwatch.Stop();
+                Summary.TotalElapsed = StartupProfilerMod.stopwatch.Elapsed;
             }
         }
 

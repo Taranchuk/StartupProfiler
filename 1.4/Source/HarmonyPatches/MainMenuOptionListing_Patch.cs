@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 using HarmonyLib;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
 	[HarmonyPatch(declaringType: typeof(OptionListingUtility), methodName: nameof(OptionListingUtility.DrawOptionListing))]
 	public static class MainMenuOptionListing_Patch

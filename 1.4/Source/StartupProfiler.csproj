@@ -7,8 +7,8 @@
     <ProjectGuid>{97FA1308-3ED7-41D8-827D-0CC3A3291EE8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModStartupImpactStats</RootNamespace>
-    <AssemblyName>ModStartupImpactStats</AssemblyName>
+    <RootNamespace>StartupProfiler</RootNamespace>
+    <AssemblyName>StartupProfiler</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -75,7 +75,7 @@
     <Compile Include="StopwatchData.cs" />
     <Compile Include="HarmonyPatches\PostLoad_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ModStartupImpactStatsMod.cs" />
+    <Compile Include="StartupProfilerMod.cs" />
     <Compile Include="StartupImpactProfiling.cs" />
     <Compile Include="HarmonyPatches\StaticConstructorOnStartupUtility_CallAll_Patch.cs" />
     <Compile Include="HarmonyPatches\ThreadLocalDeepProfiler_AppendStringRecursive_Patch.cs" />

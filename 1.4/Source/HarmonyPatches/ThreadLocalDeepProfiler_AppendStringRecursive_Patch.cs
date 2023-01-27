@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using Verse;
 using static Verse.ThreadLocalDeepProfiler;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), "AppendStringRecursive")]
     public static class ThreadLocalDeepProfiler_AppendStringRecursive_Patch

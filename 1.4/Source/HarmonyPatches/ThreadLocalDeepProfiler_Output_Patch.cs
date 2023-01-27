@@ -5,14 +5,14 @@ using System.Threading;
 using Verse;
 using static Verse.ThreadLocalDeepProfiler;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), nameof(ThreadLocalDeepProfiler.Output))]
     public static class ThreadLocalDeepProfiler_Output_Patch
     {
         public static bool Prefix(ThreadLocalDeepProfiler __instance, Watcher root)
         {
-            if (ModStartupImpactStatsMod.oldVerbose is false)
+            if (StartupProfilerMod.oldVerbose is false)
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 List<Watcher> list = new List<Watcher>();

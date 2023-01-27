@@ -2,7 +2,7 @@
 using Verse;
 using static Verse.ThreadLocalDeepProfiler;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), "End")]
     public static class ThreadLocalDeepProfiler_End_Patch

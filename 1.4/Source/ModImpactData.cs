@@ -4,7 +4,7 @@ using System.Text;
 using Verse;
 using UnityEngine;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     public class ModImpactData
     {

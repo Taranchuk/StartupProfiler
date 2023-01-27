@@ -7,7 +7,7 @@ using Verse.Sound;
 using RimWorld;
 using UnityEngine;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
 	[StaticConstructorOnStartup]
 	public class ReportWindow : Window

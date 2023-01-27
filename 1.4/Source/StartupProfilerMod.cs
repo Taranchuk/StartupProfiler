@@ -7,26 +7,26 @@ using System.Xml;
 using UnityEngine;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
-    public class ModStartupImpactStatsMod : Mod
+    public class StartupProfilerMod : Mod
     {
         public static Stopwatch stopwatch;
         public static Harmony harmony;
-        public static ModStartupImpactStatsMod Instance;
+        public static StartupProfilerMod Instance;
 
         public static bool oldVerbose;
-        public ModStartupImpactStatsMod(ModContentPack pack) : base(pack)
+        public StartupProfilerMod(ModContentPack pack) : base(pack)
         {
             oldVerbose = Prefs.LogVerbose;
             Prefs.LogVerbose = true;
             if (!oldVerbose)
             {
                 DeepProfiler.Start("InitializeMods()");
-                DeepProfiler.Start(string.Concat("Loading ", typeof(ModStartupImpactStatsMod), " mod class"));
+                DeepProfiler.Start(string.Concat("Loading ", typeof(StartupProfilerMod), " mod class"));
             }
             Instance = this;
-            harmony = new Harmony("ModStartupImpactStats.MyPatches");
+            harmony = new Harmony("StartupProfiler.MyPatches");
             harmony.PatchAll();
             stopwatch = new Stopwatch();
             stopwatch.Start();

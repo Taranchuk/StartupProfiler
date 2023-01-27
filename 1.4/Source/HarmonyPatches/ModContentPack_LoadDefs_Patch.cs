@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using Verse;
 
-namespace ModStartupImpactStats
+namespace StartupProfiler
 {
     [HarmonyPatch(typeof(ModContentPack), "LoadDefs")]
     public static class ModContentPack_LoadDefs_Patch
