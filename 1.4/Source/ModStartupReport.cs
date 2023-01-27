@@ -48,8 +48,9 @@ namespace ModStartupImpactStats
                             }
                         }
                     }
-                    HarmonyPatches_Profile.registeredMethods.Clear();
                 }
+
+                HarmonyPatches_Profile.registeredMethods.Clear();
 
                 foreach (var stopwatch in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
                 {
