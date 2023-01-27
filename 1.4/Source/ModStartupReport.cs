@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using RimWorld;
+using RimWorld.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ using Verse;
 
 namespace StartupProfiler
 {
-    [HarmonyPatch(typeof(EditWindow_Log), MethodType.Constructor)]
+    [HarmonyPatch(typeof(AbstractFilesystem), "ClearAllCache")]
     internal static class ModStartupReport
     {
         public static bool initialized = false;
@@ -25,12 +26,12 @@ namespace StartupProfiler
             if (!initialized)
             {
                 initialized = true;
-                LogStartupImpact();
+                EndStartupProfile();
                 Prefs.LogVerbose = StartupProfilerMod.oldVerbose;
             }
         }
 
-        private static void LogStartupImpact()
+        private static void EndStartupProfile()
         {
             if (StartupImpactProfiling.stopwatches.Any())
             {
@@ -53,10 +54,6 @@ namespace StartupProfiler
                     }
                 }
                 HarmonyPatches_Profile.registeredMethods.Clear();
-                foreach ((_, StopwatchData stopwatchData) in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
-                {
-                    stopwatchData.LogTime();
-                }
             }
             
             if (StartupProfilerMod.stopwatch != null)

@@ -19,9 +19,9 @@ namespace StartupProfiler
         public StartupProfilerMod(ModContentPack pack) : base(pack)
         {
             oldVerbose = Prefs.LogVerbose;
-            Prefs.LogVerbose = true;
             if (!oldVerbose)
             {
+                Prefs.LogVerbose = true;
                 DeepProfiler.Start("InitializeMods()");
                 DeepProfiler.Start(string.Concat("Loading ", typeof(StartupProfilerMod), " mod class"));
             }
