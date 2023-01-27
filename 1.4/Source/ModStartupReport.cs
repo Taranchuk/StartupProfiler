@@ -48,6 +48,7 @@ namespace ModStartupImpactStats
                             }
                         }
                     }
+                    HarmonyPatches_Profile.registeredMethods.Clear();
                 }
 
                 foreach (var stopwatch in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
@@ -60,49 +61,45 @@ namespace ModStartupImpactStats
             {
                 ModStartupImpactStatsMod.stopwatch.Stop();
                 mainMessage.AppendLine("Mods installed: " + ModLister.AllInstalledMods.Where(x => x.Active).Count() + " - total startup time: " + ModStartupImpactStatsMod.stopwatch.Elapsed.ToString(@"m\:ss"));
-                if (Prefs.LogVerbose)
+                var allCategoryImpacts = new Dictionary<string, float>();
+                foreach (var modImpact in ModImpactData.modsImpact.OrderByDescending(x => x.Value.TotalImpactTime()))
                 {
-                    var allCategoryImpacts = new Dictionary<string, float>();
-                    foreach (var modImpact in ModImpactData.modsImpact.OrderByDescending(x => x.Value.TotalImpactTime()))
+                    var impactTime = modImpact.Value.TotalImpactTime();
+                    if (impactTime > ModImpactData.MinModImpactLogging)
                     {
-                        var impactTime = modImpact.Value.TotalImpactTime();
-                        if (impactTime > ModImpactData.MinModImpactLogging)
+                        var packageId = modImpact.Key;
+                        var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.PackageIdPlayerFacing.ToLower() == packageId.ToLower());
+                        if (mod != null)
                         {
-                            var packageId = modImpact.Key;
-                            var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.PackageIdPlayerFacing.ToLower() == packageId.ToLower());
-                            if (mod != null)
+                            if (!mod.IsOfficialMod)
                             {
-                                if (!mod.IsOfficialMod)
-                                {
-                                    secondaryMessage.AppendLine("Mod impact: " + mod.Name + " - " + impactTime.ToStringDecimalIfSmall() + "s, summary:\n" + modImpact.Value.ModSummary());
-                                }
-                            }
-                            else
-                            {
-                                secondaryMessage.AppendLine("Total impact: - " + packageId + " - " + impactTime.ToStringDecimalIfSmall() + "s, summary:\n" + modImpact.Value.ModSummary());
+                                secondaryMessage.AppendLine("Mod impact: " + mod.Name + " - " + impactTime.ToStringDecimalIfSmall() + "s, summary:\n" + modImpact.Value.ModSummary());
                             }
                         }
-
-                        foreach (var category in modImpact.Value.impactByCategories)
+                        else
                         {
-                            if (allCategoryImpacts.ContainsKey(category.Key))
-                            {
-                                allCategoryImpacts[category.Key] += category.Value.Sum(x => x.Value);
-                            }
-                            else
-                            {
-                                allCategoryImpacts[category.Key] = category.Value.Sum(x => x.Value);
-                            }
+                            secondaryMessage.AppendLine("Total impact: - " + packageId + " - " + impactTime.ToStringDecimalIfSmall() + "s, summary:\n" + modImpact.Value.ModSummary());
                         }
                     }
 
-                    foreach (var category in allCategoryImpacts.OrderByDescending(x => x.Value))
+                    foreach (var category in modImpact.Value.impactByCategories)
                     {
-                        mainMessage.AppendLine("Category " + category.Key + " took " + (category.Value).ToStringDecimalIfSmall() + "s");
+                        if (allCategoryImpacts.ContainsKey(category.Key))
+                        {
+                            allCategoryImpacts[category.Key] += category.Value.Sum(x => x.Value);
+                        }
+                        else
+                        {
+                            allCategoryImpacts[category.Key] = category.Value.Sum(x => x.Value);
+                        }
                     }
-                    mainMessage.AppendLine("Mod impact measured: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
-                    //DisableXMlOnlyMods(mess);
                 }
+
+                foreach (var category in allCategoryImpacts.OrderByDescending(x => x.Value))
+                {
+                    mainMessage.AppendLine("Category " + category.Key + " took " + (category.Value).ToStringDecimalIfSmall() + "s");
+                }
+                mainMessage.AppendLine("Mod impact measured: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
                 var modReport = "Mod info report: \n" + mainMessage.ToString() + "\n" + secondaryMessage.ToString();
                 Log.Warning(modReport);
             }
