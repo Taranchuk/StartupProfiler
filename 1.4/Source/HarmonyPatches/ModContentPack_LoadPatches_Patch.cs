@@ -17,6 +17,7 @@ namespace ModStartupImpactStats
         {
             return Prefs.LogVerbose;
         }
+
         public static void Prefix(ModContentPack __instance)
         {
             stopwatch.Restart();
@@ -25,7 +26,7 @@ namespace ModStartupImpactStats
         public static void Postfix(ModContentPack __instance)
         {
             stopwatch.Stop();
-            ModImpactData.RegisterImpact(__instance.PackageIdPlayerFacing, "XML Patches", "LoadPatches", stopwatch.SecondsElapsed());
+            ModImpactData.RegisterImpact(__instance, "XML Patches", "LoadPatches", stopwatch.SecondsElapsed());
             foreach (var patch in __instance.Patches)
             {
                 modsByPatches[patch.sourceFile] = __instance;

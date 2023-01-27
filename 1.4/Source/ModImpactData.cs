@@ -2,30 +2,45 @@
 using System.Linq;
 using System.Text;
 using Verse;
+using UnityEngine;
 
 namespace ModStartupImpactStats
 {
     public class ModImpactData
     {
-        public static Dictionary<string, ModImpactData> modsImpact = new();
-
-        public Dictionary<string, Dictionary<string, float>> impactByCategories = new();
-        public float TotalImpactTime()
-        {
-            float time = 0f;
-            foreach (var category in impactByCategories)
-            {
-                foreach (var subCategory in category.Value)
-                {
-                    time += subCategory.Value;
-                }
-            }
-            return time;
-        }
-
         public const float MinModImpactLogging = 0.1f;
         public const float MinCategoryImpactLogging = 0.01f;
         public const float MinSubCategoryImpactLogging = 0.001f;
+
+        //public static Dictionary<ModContentPack, ModImpactData> modsImpact = new();
+
+
+        private float cachedImpactTime = -1;
+        public ModContentPack mod;
+        public string summary;
+
+        /// <summary>
+        /// (category, (subCategory, float))
+        /// </summary>
+        public Dictionary<string, Dictionary<string, float>> impactByCategories = new();
+
+        public ModImpactData(ModContentPack mod)
+		{
+            this.mod = mod;
+		}
+
+        public float TotalImpactTime
+		{
+			get
+			{
+                if ( cachedImpactTime < 0)
+				{
+                    cachedImpactTime = impactByCategories.Values.Sum(dict => dict.Values.Sum());
+                }
+                return cachedImpactTime;
+			}
+		}
+
         public string ModSummary()
         {
             StringBuilder sb = new StringBuilder();
@@ -48,14 +63,6 @@ namespace ModStartupImpactStats
             return sb.ToString();
         }
 
-        public static void RegisterImpact(string modPackageId, string category, string subCategory, float impact)
-        {
-            if (!modsImpact.TryGetValue(modPackageId, out var modImpact))
-            {
-                modsImpact[modPackageId] = modImpact = new ModImpactData();
-            }
-            modImpact.RegisterImpact(category, subCategory, impact);
-        }
         public void RegisterImpact(string category, string subCategory, float impact)
         {
             if (impactByCategories.TryGetValue(category, out var data))
@@ -77,6 +84,14 @@ namespace ModStartupImpactStats
                 };
             }
         }
-    }
 
+        public static void RegisterImpact(ModContentPack mod, string category, string subCategory, float impact)
+        {
+            if (!ModStartupReport.Summary.TryGetValue(mod, out ModImpactData modImpact))
+            {
+                ModStartupReport.Summary[mod] = modImpact = new ModImpactData(mod);
+            }
+            modImpact.RegisterImpact(category, subCategory, impact);
+        }
+    }
 }

@@ -39,7 +39,7 @@ namespace ModStartupImpactStats
                 stopwatch.Stop();
                 if (ModContentPack_LoadPatches_Patch.modsByPatches.TryGetValue(__instance.sourceFile, out var mod))
                 {
-                    ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "XML Patches", "PatchOperation.Apply", stopwatch.SecondsElapsed());
+                    ModImpactData.RegisterImpact(mod, "XML Patches", "PatchOperation.Apply", stopwatch.SecondsElapsed());
                 }
             }
         }

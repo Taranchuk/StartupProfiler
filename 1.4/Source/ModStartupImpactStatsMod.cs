@@ -30,7 +30,6 @@ namespace ModStartupImpactStats
             harmony.PatchAll();
             stopwatch = new Stopwatch();
             stopwatch.Start();
-            Log.TryOpenLogWindow();
         }
     }
 }
