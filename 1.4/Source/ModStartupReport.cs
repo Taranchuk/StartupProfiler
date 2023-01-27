@@ -3,7 +3,7 @@ using RimWorld;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
+using System.Reflection;
 using System.Text;
 using System.Xml;
 using UnityEngine;
@@ -17,6 +17,9 @@ namespace ModStartupImpactStats
     {
         public static StringBuilder mainMessage = new StringBuilder();
         public static StringBuilder secondaryMessage = new StringBuilder();
+
+        internal static ReportSummary Summary { get; private set; } = new ReportSummary();
+
         private static void Postfix()
         {
             LogStartupImpact();
@@ -27,41 +30,50 @@ namespace ModStartupImpactStats
         {
             if (StartupImpactProfiling.stopwatches.Any())
             {
-                foreach (var registeredMethod in HarmonyPatches_Profile.registeredMethods)
+                foreach (MethodInfo registeredMethod in HarmonyPatches_Profile.registeredMethods)
                 {
-                    if (StartupImpactProfiling.stopwatches.Remove(registeredMethod, out var watch))
+                    if (StartupImpactProfiling.stopwatches.Remove(registeredMethod, out StopwatchData stopWatchData))
                     {
-                        var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(registeredMethod.DeclaringType.Assembly));
+                        ModContentPack mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(registeredMethod.DeclaringType.Assembly));
                         if (mod != null && !mod.IsOfficialMod)
                         {
                             if (registeredMethod.DeclaringType.Assembly.GetName().Name == "GraphicSetter")
                             {
-                                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "Texture2D", "GraphicSetter", watch.totalTimeInSeconds);
+                                ModImpactData.RegisterImpact(mod, "Texture2D", "GraphicSetter", stopWatchData.totalTimeInSeconds);
                             }
                             else
                             {
-                                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "Harmony patch (" + registeredMethod.FullMethodName() + ")", watch.totalTimeInSeconds);
+                                ModImpactData.RegisterImpact(mod, "C#", $"HarmonyPatch ({registeredMethod.FullMethodName()})", stopWatchData.totalTimeInSeconds);
                             }
                         }
                     }
                 }
 
-                foreach (var stopwatch in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
+                foreach ((_, StopwatchData stopwatchData) in StartupImpactProfiling.stopwatches.OrderByDescending(x => x.Value.totalTimeInSeconds))
                 {
-                    stopwatch.Value.LogTime();
+                    stopwatchData.LogTime();
                 }
             }
-
+            
             if (ModStartupImpactStatsMod.stopwatch != null)
             {
                 ModStartupImpactStatsMod.stopwatch.Stop();
-                mainMessage.AppendLine("Mods installed: " + ModLister.AllInstalledMods.Where(x => x.Active).Count() + " - total startup time: " + ModStartupImpactStatsMod.stopwatch.Elapsed.ToString(@"m\:ss"));
+                //mainMessage.AppendLine("Mods installed: " + ModLister.AllInstalledMods.Where(x => x.Active).Count() + " - total startup time: " + ModStartupImpactStatsMod.stopwatch.Elapsed.ToString(@"m\:ss"));
+                Summary.TotalElapsed = ModStartupImpactStatsMod.stopwatch.Elapsed;
                 if (Prefs.LogVerbose)
                 {
+                    //Don't need to deconstruct, ModImpactData has reference to declaring ModContentPack
+                    foreach (ModImpactData modImpactData in Summary.AllEntries.OrderByDescending(modImpactData => modImpactData.TotalImpactTime))
+					{
+                        if (modImpactData.TotalImpactTime >= ModImpactData.MinModImpactLogging && !modImpactData.mod.IsOfficialMod)
+						{
+						}
+					}
+                    /*
                     var allCategoryImpacts = new Dictionary<string, float>();
-                    foreach (var modImpact in ModImpactData.modsImpact.OrderByDescending(x => x.Value.TotalImpactTime()))
+                    foreach (var modImpact in ModImpactData.modsImpact.OrderByDescending(x => x.Value.TotalImpactTime))
                     {
-                        var impactTime = modImpact.Value.TotalImpactTime();
+                        var impactTime = modImpact.Value.TotalImpactTime;
                         if (impactTime > ModImpactData.MinModImpactLogging)
                         {
                             var packageId = modImpact.Key;
@@ -97,11 +109,22 @@ namespace ModStartupImpactStats
                         mainMessage.AppendLine("Category " + category.Key + " took " + (category.Value).ToStringDecimalIfSmall() + "s");
                     }
                     mainMessage.AppendLine("Mod impact measured: " + (ModImpactData.modsImpact.Sum(x => x.Value.TotalImpactTime()).ToStringDecimalIfSmall() + "s"));
+                    */
                     //DisableXMlOnlyMods(mess);
                 }
                 var modReport = "Mod info report: \n" + mainMessage.ToString() + "\n" + secondaryMessage.ToString();
-                Log.Warning(modReport);
+                //Log.Warning(modReport);
             }
         }
+
+        /// <summary>
+        /// Dictionary wrapper class for storing additional summary data
+        /// </summary>
+        public class ReportSummary : Dictionary<ModContentPack, ModImpactData>
+        {
+            public ValueCollection AllEntries => Values;
+
+            public TimeSpan TotalElapsed { get; set; }
+		}
     }
 }

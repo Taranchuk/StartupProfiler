@@ -32,7 +32,7 @@ namespace ModStartupImpactStats
                         var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(item.Assembly));
                         if (mod != null && !mod.IsOfficialMod)
                         {
-                            ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "StaticConstructorOnStartup (" + item.FullName + "." + item.Name + ")", stopwatch.SecondsElapsed());
+                            ModImpactData.RegisterImpact(mod, "C#", "StaticConstructorOnStartup (" + item.FullName + "." + item.Name + ")", stopwatch.SecondsElapsed());
                         }
                         else
                         {

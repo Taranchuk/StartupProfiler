@@ -15,7 +15,8 @@ namespace ModStartupImpactStats
         }
 
         public static Stopwatch stopwatch = new Stopwatch();
-        public static void Prefix(out (string, string)? __state)
+
+        public static void Prefix(out (ModContentPack, string)? __state)
         {
             stopwatch.Restart();
             if (!LongEventHandler.currentEvent.ShouldWaitUntilDisplayed && LongEventHandler.currentEvent.eventAction != null)
@@ -24,7 +25,7 @@ namespace ModStartupImpactStats
                 var mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(assembly));
                 if (mod != null && !mod.IsOfficialMod)
                 {
-                    __state = (mod.PackageIdPlayerFacing, LongEventHandler.currentEvent.eventAction.Method.FullDescription());
+                    __state = (mod, LongEventHandler.currentEvent.eventAction.Method.FullDescription());
                 }
                 else
                 {
@@ -37,7 +38,7 @@ namespace ModStartupImpactStats
             }
         }
 
-        public static void Postfix((string, string)? __state)
+        public static void Postfix((ModContentPack, string)? __state)
         {
             stopwatch.Stop();
             if (__state != null)

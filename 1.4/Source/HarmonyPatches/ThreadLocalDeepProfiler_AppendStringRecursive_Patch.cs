@@ -12,11 +12,6 @@ namespace ModStartupImpactStats
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), "AppendStringRecursive")]
     public static class ThreadLocalDeepProfiler_AppendStringRecursive_Patch
     {
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
         static Regex modNameRegex = new Regex(@" for mod (.*)");
         static Regex assetRegex = new Regex(@" assets of type ([^ ]+)");
         static Regex impactTimeRegex = new Regex(@"self: ([^ ]+)");
@@ -24,6 +19,13 @@ namespace ModStartupImpactStats
         static Regex modClassRegex2 = new Regex(@"([^ ]+) -> [a-z]", RegexOptions.IgnoreCase);
 
         public static HashSet<string> processedLines = new HashSet<string>();
+
+        [HarmonyPrepare]
+        public static bool Prepare()
+        {
+            return Prefs.LogVerbose;
+        }
+
         public static void Postfix(ref StringBuilder sb, string label, List<Watcher> children)
         {
             string[] delim = { Environment.NewLine, "\n" };
@@ -35,11 +37,12 @@ namespace ModStartupImpactStats
                     processedLines.Add(line);
                     if (line.Contains(" for mod "))
                     {
-                        var modName = modNameRegex.Match(line).Groups[1].Value;
+                        var packageId = modNameRegex.Match(line).Groups[1].Value;
                         var assetType = assetRegex.Match(line).Groups[1].Value;
                         assetType = assetType.Replace("UnityEngine.", "").Replace("System.", "");
                         var impact = float.Parse(impactTimeRegex.Match(line).Groups[1].Value);
-                        ModImpactData.RegisterImpact(modName, assetType, "Asset loading", impact / 1000f);
+                        var mod = LoadedModManager.RunningModsListForReading.FirstOrDefault(mod => mod.PackageIdPlayerFacing == packageId);
+                        ModImpactData.RegisterImpact(mod, assetType, "Asset loading", impact / 1000f);
                     }
                     else if (modClassRegex2.IsMatch(line))
                     {
@@ -51,7 +54,7 @@ namespace ModStartupImpactStats
                             if (mod != null && !mod.IsOfficialMod)
                             {
                                 var impact = float.Parse(impactTimeRegex.Match(line).Groups[1].Value);
-                                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "LongEventHandler (" + typeName + ")", impact / 1000f);
+                                ModImpactData.RegisterImpact(mod, "C#", "LongEventHandler (" + typeName + ")", impact / 1000f);
                             }
                         }
                     }
@@ -76,7 +79,7 @@ namespace ModStartupImpactStats
                                     var mod = modClass.Content;
                                     if (!mod.IsOfficialMod)
                                     {
-                                        ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "C#", "Mod constructor (" + typeName + ")", (float)child.ElapsedMilliseconds / 1000f);
+                                        ModImpactData.RegisterImpact(mod, "C#", "Mod constructor (" + typeName + ")", (float)child.ElapsedMilliseconds / 1000f);
                                     }
                                 }
                             }

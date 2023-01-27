@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Mod startup impact stats</name>
+	<name>Mod Startup Impact Stats</name>
 	<author>Taranchuk</author>
+	<packageId>Taranchuk.ModStartupImpactStats</packageId>
+	<description>Profiles mods upon startup. Most be loaded first and after harmony for better result.</description>
+	
 	<supportedVersions>
 		<li>1.4</li>
 	</supportedVersions>
+	
 	<modDependencies>
 		<li>
 			<packageId>brrainz.harmony</packageId>
@@ -13,11 +17,11 @@
 			<downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
 		</li>
 	</modDependencies>
-	<packageId>Taranchuk.ModStartupImpactStats</packageId>
-	<description>Profiles mods upon startup. Most be loaded first and after harmony for better result.</description>
+	
 	<loadBefore>
 		<li>Ludeon.RimWorld</li>
 	</loadBefore>
+	
 	<loadAfter>
 		<li>brrainz.harmony</li>
 	</loadAfter>

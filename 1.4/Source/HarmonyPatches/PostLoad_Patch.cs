@@ -49,7 +49,7 @@ namespace ModStartupImpactStats
             var mod = __instance.modContentPack;
             if (mod != null)
             {
-                ModImpactData.RegisterImpact(mod.PackageIdPlayerFacing, "Defs", "Def init", stopwatch.SecondsElapsed());
+                ModImpactData.RegisterImpact(mod, "Defs", "Def init", stopwatch.SecondsElapsed());
             }
         }
     }

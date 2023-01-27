@@ -14,14 +14,16 @@ namespace ModStartupImpactStats
         {
             return Prefs.LogVerbose;
         }
+
         static void Prefix()
         {
             stopwatch.Restart();
         }
+
         public static void Postfix(ModContentPack __instance)
         {
             stopwatch.Stop();
-            ModImpactData.RegisterImpact(__instance.PackageIdPlayerFacing, "Defs", "LoadDefs", stopwatch.SecondsElapsed());
+            ModImpactData.RegisterImpact(__instance, "Defs", "LoadDefs", stopwatch.SecondsElapsed());
         }
     }
 }
