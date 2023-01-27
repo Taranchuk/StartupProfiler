@@ -11,16 +11,20 @@ using Verse;
 
 namespace ModStartupImpactStats
 {
-
     [HarmonyPatch(typeof(EditWindow_Log), MethodType.Constructor)]
     internal static class ModStartupReport
     {
+        public static bool initialized = false;
         public static StringBuilder mainMessage = new StringBuilder();
         public static StringBuilder secondaryMessage = new StringBuilder();
         private static void Postfix()
         {
-            LogStartupImpact();
-            Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
+            if (!initialized)
+            {
+                initialized = true;
+                LogStartupImpact();
+                Prefs.LogVerbose = ModStartupImpactStatsMod.oldVerbose;
+            }
         }
 
         private static void LogStartupImpact()
