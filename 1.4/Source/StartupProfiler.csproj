@@ -73,7 +73,7 @@
     <Compile Include="ModStartupReport.cs" />
     <Compile Include="HarmonyPatches\PatchOperation_Apply_Patch.cs" />
     <Compile Include="StopwatchData.cs" />
-    <Compile Include="HarmonyPatches\PostLoad_Patch.cs" />
+    <Compile Include="HarmonyPatches\Def_Patch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StartupProfilerMod.cs" />
     <Compile Include="StartupImpactProfiling.cs" />

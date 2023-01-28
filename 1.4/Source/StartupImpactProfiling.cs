@@ -49,8 +49,8 @@ namespace StartupProfiler
 
 
         public static ConcurrentDictionary<MethodBase, StopwatchData> stopwatches = new ConcurrentDictionary<MethodBase, StopwatchData>();
-        private static HarmonyMethod profilePrefix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPrefix)));
-        private static HarmonyMethod profilePostfix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPostfix)));
+        public static HarmonyMethod profilePrefix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPrefix)));
+        public static HarmonyMethod profilePostfix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPostfix)));
         private static void ProfileMethod(MethodBase methodInfo)
         {
             LongEventHandler.ExecuteWhenFinished(delegate

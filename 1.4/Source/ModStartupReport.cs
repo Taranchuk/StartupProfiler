@@ -16,9 +16,6 @@ namespace StartupProfiler
     internal static class ModStartupReport
     {
         public static bool initialized = false;
-        public static StringBuilder mainMessage = new StringBuilder();
-        public static StringBuilder secondaryMessage = new StringBuilder();
-
         internal static ReportSummary Summary { get; private set; } = new ReportSummary();
 
         private static void Postfix()
@@ -37,6 +34,8 @@ namespace StartupProfiler
             {
                 foreach (MethodInfo registeredMethod in HarmonyPatches_Profile.registeredMethods)
                 {
+                    StartupProfilerMod.harmony.Unpatch(registeredMethod, StartupImpactProfiling.profilePrefix.method);
+                    StartupProfilerMod.harmony.Unpatch(registeredMethod, StartupImpactProfiling.profilePostfix.method);
                     if (StartupImpactProfiling.stopwatches.Remove(registeredMethod, out StopwatchData stopWatchData))
                     {
                         ModContentPack mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(registeredMethod.DeclaringType.Assembly));
@@ -61,6 +60,11 @@ namespace StartupProfiler
                 StartupProfilerMod.stopwatch.Stop();
                 Summary.TotalElapsed = StartupProfilerMod.stopwatch.Elapsed;
             }
+
+            StartupProfilerMod.harmony.UnpatchAll(StartupProfilerMod.harmony.Id);
+            var listingMethod = AccessTools.Method(typeof(OptionListingUtility), nameof(OptionListingUtility.DrawOptionListing));
+            StartupProfilerMod.harmony.Patch(listingMethod, prefix: new HarmonyMethod(AccessTools.Method(typeof(MainMenuOptionListing_Patch),
+                nameof(MainMenuOptionListing_Patch.Prefix))));
         }
 
         /// <summary>

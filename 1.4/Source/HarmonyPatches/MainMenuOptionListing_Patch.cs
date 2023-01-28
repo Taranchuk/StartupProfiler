@@ -9,10 +9,9 @@ using Verse;
 
 namespace StartupProfiler
 {
-	[HarmonyPatch(declaringType: typeof(OptionListingUtility), methodName: nameof(OptionListingUtility.DrawOptionListing))]
 	public static class MainMenuOptionListing_Patch
 	{
-		private static void Prefix(List<ListableOption> optList)
+		public static void Prefix(List<ListableOption> optList)
 		{
 			//OptionListing is used twice: Main menu buttons and web links. Only insert on weblinks column
 			if (optList.Any(opt => opt is ListableOption_WebLink))
