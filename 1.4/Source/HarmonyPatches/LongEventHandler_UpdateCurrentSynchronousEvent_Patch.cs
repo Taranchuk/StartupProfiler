@@ -8,14 +8,7 @@ namespace StartupProfiler
     [HarmonyPatch(typeof(LongEventHandler), "UpdateCurrentSynchronousEvent")]
     public static class LongEventHandler_UpdateCurrentSynchronousEvent_Patch
     {
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
-
         public static Stopwatch stopwatch = new Stopwatch();
-
         public static void Prefix(out (ModContentPack, string)? __state)
         {
             stopwatch.Restart();

@@ -12,12 +12,6 @@ namespace StartupProfiler
         
         public static Stopwatch stopwatch = new Stopwatch();
 
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
-
         public static void Prefix(ModContentPack __instance)
         {
             stopwatch.Restart();

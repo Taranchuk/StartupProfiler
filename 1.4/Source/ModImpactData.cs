@@ -8,13 +8,8 @@ namespace StartupProfiler
 {
     public class ModImpactData
     {
-        public const float MinModImpactLogging = 0.1f;
         public const float MinCategoryImpactLogging = 0.01f;
         public const float MinSubCategoryImpactLogging = 0.001f;
-
-        //public static Dictionary<ModContentPack, ModImpactData> modsImpact = new();
-
-
         private float cachedImpactTime = -1;
         public ModContentPack mod;
         public string summary;

@@ -4,6 +4,7 @@ using static Verse.ThreadLocalDeepProfiler;
 
 namespace StartupProfiler
 {
+
     [HarmonyPatch(typeof(ThreadLocalDeepProfiler), "End")]
     public static class ThreadLocalDeepProfiler_End_Patch
     {

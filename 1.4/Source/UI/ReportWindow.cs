@@ -34,7 +34,7 @@ namespace StartupProfiler
 			closeOnCancel = true;
 			doCloseX = true;
 			//Order is non-deterministic. Needs to be reordered based on impact times
-			cachedModDatas = ModStartupReport.Summary.AllEntries.Where(modImpactData => modImpactData.TotalImpactTime >= ModImpactData.MinModImpactLogging && !modImpactData.mod.IsOfficialMod)
+			cachedModDatas = ModStartupReport.Summary.AllEntries.Where(modImpactData => !modImpactData.mod.IsOfficialMod)
 																.OrderByDescending(modImpactData => modImpactData.TotalImpactTime).ToList();
 			RecacheModListHeight();
 		}
@@ -183,7 +183,6 @@ namespace StartupProfiler
 		private void RecacheModListHeight()
 		{
 			ModListHeight = cachedModDatas.Count * ModEntryHeight;
-			Log.Message($"Height: {ModListHeight} = {cachedModDatas.Count} * {ModEntryHeight}");
 		}
 
 		private void RecacheReportHeight(float width)

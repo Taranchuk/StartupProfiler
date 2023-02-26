@@ -9,12 +9,6 @@ namespace StartupProfiler
     {
         public static Stopwatch stopwatch = new Stopwatch();
         public static PatchOperation currentPatchOp;
-
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
         public static void Prefix(PatchOperation __instance)
         {
             if (currentPatchOp is null)

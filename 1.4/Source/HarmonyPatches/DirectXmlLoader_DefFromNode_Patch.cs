@@ -8,13 +8,6 @@ namespace StartupProfiler
     public static class DirectXmlLoader_DefFromNode_Patch
     {
         public static Stopwatch stopwatch = new Stopwatch();
-
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
-
         static void Prefix()
         {
             stopwatch.Restart();

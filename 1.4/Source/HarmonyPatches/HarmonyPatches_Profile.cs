@@ -13,13 +13,6 @@ namespace StartupProfiler
         public static HashSet<MethodBase> registeredMethods = new HashSet<MethodBase>();
 
         public static bool preventRecursion;
-
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
-
         public static IEnumerable<MethodBase> TargetMethods()
         {
             yield return AccessTools.Method(typeof(PatchInfo), nameof(PatchInfo.AddPrefixes));

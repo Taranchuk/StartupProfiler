@@ -11,11 +11,6 @@ namespace StartupProfiler
     [HarmonyPatch]
     public static class Def_Patch
     {
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
         [HarmonyTargetMethods]
         public static IEnumerable<MethodBase> GetMethods()
         {

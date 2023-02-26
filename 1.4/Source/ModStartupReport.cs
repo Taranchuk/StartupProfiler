@@ -1,34 +1,31 @@
 ﻿using HarmonyLib;
-using RimWorld;
-using RimWorld.IO;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Xml;
-using UnityEngine;
 using Verse;
 
 namespace StartupProfiler
 {
-    [HarmonyPatch(typeof(AbstractFilesystem), "ClearAllCache")]
-    internal static class ModStartupReport
+    [HarmonyPatch(typeof(Root), "Update")]
+    public static class ModStartupReport
     {
-        public static bool initialized = false;
+        public static int updateCount;
         internal static ReportSummary Summary { get; private set; } = new ReportSummary();
-
-        private static void Postfix()
+        public static bool shouldReport;
+        public static void Postfix()
         {
-            if (!initialized)
+            if (shouldReport)
             {
-                initialized = true;
-                EndStartupProfile();
-                Prefs.LogVerbose = StartupProfilerMod.oldVerbose;
+                updateCount++;
+                if (updateCount == 10)
+                {
+                    EndStartupProfile();
+                }
             }
         }
 
-        private static void EndStartupProfile()
+
+        public static void EndStartupProfile()
         {
             if (StartupImpactProfiling.stopwatches.Any())
             {
@@ -54,7 +51,7 @@ namespace StartupProfiler
                 }
                 HarmonyPatches_Profile.registeredMethods.Clear();
             }
-            
+
             if (StartupProfilerMod.stopwatch != null)
             {
                 StartupProfilerMod.stopwatch.Stop();
@@ -65,16 +62,7 @@ namespace StartupProfiler
             var listingMethod = AccessTools.Method(typeof(OptionListingUtility), nameof(OptionListingUtility.DrawOptionListing));
             StartupProfilerMod.harmony.Patch(listingMethod, prefix: new HarmonyMethod(AccessTools.Method(typeof(MainMenuOptionListing_Patch),
                 nameof(MainMenuOptionListing_Patch.Prefix))));
+            Prefs.LogVerbose = StartupProfilerMod.oldVerbose;
         }
-
-        /// <summary>
-        /// Dictionary wrapper class for storing additional summary data
-        /// </summary>
-        public class ReportSummary : Dictionary<ModContentPack, ModImpactData>
-        {
-            public ValueCollection AllEntries => Values;
-
-            public TimeSpan TotalElapsed { get; set; }
-		}
     }
 }

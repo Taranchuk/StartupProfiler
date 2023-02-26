@@ -12,11 +12,6 @@ namespace StartupProfiler
     {
         public static Stopwatch stopwatch = new Stopwatch();
 
-        [HarmonyPrepare]
-        public static bool Prepare()
-        {
-            return Prefs.LogVerbose;
-        }
         public static bool Prefix()
         {
             foreach (Type item in GenTypes.AllTypesWithAttribute<StaticConstructorOnStartup>())
