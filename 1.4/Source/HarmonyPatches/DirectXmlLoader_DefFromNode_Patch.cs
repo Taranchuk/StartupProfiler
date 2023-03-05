@@ -18,7 +18,7 @@ namespace StartupProfiler
             stopwatch.Stop();
             if (loadingAsset?.mod != null)
             {
-                ModImpactData.RegisterImpact(loadingAsset.mod, "Defs", "DefFromNode", stopwatch.SecondsElapsed());
+                ModImpactData.RegisterImpact(loadingAsset.mod, "Defs", "Creating defs from XML", stopwatch.SecondsElapsed());
             }
         }
     }

@@ -14,26 +14,22 @@ namespace StartupProfiler
         public static bool shouldReport;
         public static void Postfix()
         {
-            if (shouldReport)
+            if (shouldReport && LongEventHandler.currentEvent is null && LongEventHandler.eventThread is null)
             {
-                updateCount++;
-                if (updateCount == 10)
-                {
-                    EndStartupProfile();
-                }
+                EndStartupProfile();
             }
         }
 
 
         public static void EndStartupProfile()
         {
-            if (StartupImpactProfiling.stopwatches.Any())
+            if (StartupImpactProfiling.harmonyPatchStopwatches.Any())
             {
                 foreach (MethodInfo registeredMethod in HarmonyPatches_Profile.registeredMethods)
                 {
                     StartupProfilerMod.harmony.Unpatch(registeredMethod, StartupImpactProfiling.profilePrefix.method);
                     StartupProfilerMod.harmony.Unpatch(registeredMethod, StartupImpactProfiling.profilePostfix.method);
-                    if (StartupImpactProfiling.stopwatches.Remove(registeredMethod, out StopwatchData stopWatchData))
+                    if (StartupImpactProfiling.harmonyPatchStopwatches.Remove(registeredMethod, out StopwatchData stopWatchData))
                     {
                         ModContentPack mod = LoadedModManager.RunningMods.FirstOrDefault(x => x.assemblies.loadedAssemblies.Contains(registeredMethod.DeclaringType.Assembly));
                         if (mod != null && !mod.IsOfficialMod)
@@ -44,7 +40,7 @@ namespace StartupProfiler
                             }
                             else
                             {
-                                ModImpactData.RegisterImpact(mod, "C#", $"HarmonyPatch ({registeredMethod.FullMethodName()})", stopWatchData.totalTimeInSeconds);
+                                ModImpactData.RegisterImpact(mod, "C#", $"Harmony patch impact ({registeredMethod.FullMethodName()})", stopWatchData.totalTimeInSeconds);
                             }
                         }
                     }

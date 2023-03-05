@@ -29,10 +29,6 @@ namespace StartupProfiler
                         {
                             ModImpactData.RegisterImpact(mod, "C#", "StaticConstructorOnStartup (" + item.FullName + "." + item.Name + ")", stopwatch.SecondsElapsed());
                         }
-                        else
-                        {
-                            Log.Message("Missing mod for " + item);
-                        }
                     }
                 }
                 catch (Exception ex)

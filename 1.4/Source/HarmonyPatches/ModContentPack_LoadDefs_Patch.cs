@@ -16,7 +16,7 @@ namespace StartupProfiler
         public static void Postfix(ModContentPack __instance)
         {
             stopwatch.Stop();
-            ModImpactData.RegisterImpact(__instance, "Defs", "LoadDefs", stopwatch.SecondsElapsed());
+            ModImpactData.RegisterImpact(__instance, "Defs", "Loading XML files", stopwatch.SecondsElapsed());
         }
     }
 }

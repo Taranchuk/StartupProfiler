@@ -42,7 +42,7 @@ namespace StartupProfiler
                         assetType = assetType.Replace("UnityEngine.", "").Replace("System.", "");
                         var impact = float.Parse(impactTimeRegex.Match(line).Groups[1].Value);
                         var mod = LoadedModManager.RunningModsListForReading.FirstOrDefault(mod => mod.PackageIdPlayerFacing == packageId);
-                        ModImpactData.RegisterImpact(mod, assetType, "Asset loading", impact / 1000f);
+                        ModImpactData.RegisterImpact(mod, assetType, assetType + " loading ", impact / 1000f);
                     }
                     else if (modClassRegex2.IsMatch(line))
                     {
@@ -57,6 +57,7 @@ namespace StartupProfiler
                                 ModImpactData.RegisterImpact(mod, "C#", "LongEventHandler (" + typeName + ")", impact / 1000f);
                             }
                         }
+
                     }
                 }
             }

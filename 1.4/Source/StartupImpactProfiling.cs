@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -19,16 +20,29 @@ namespace StartupProfiler
             if (mi.HasMethodBody() && mi.DeclaringType.IsConstructedGenericType is false &&
                 mi.IsGenericMethod is false && mi.ContainsGenericParameters is false && mi.IsGenericMethodDefinition is false)
             {
-                var desc = mi.FullDescription();
-                if (desc.Contains("LoadoutGenericDef"))
+                try
                 {
-                    return false;
+                    var desc = mi.FullDescription();
+                    if (desc.Contains("LoadoutGenericDef"))
+                    {
+                        return false;
+                    }
+                    return true;
                 }
-                return true;
+                catch { };
             }
             return false;
         }
 
+        public static ConcurrentDictionary<MethodBase, Stopwatch> stopwatches = new();
+        public static Stopwatch GetStopwatch(this MethodBase method)
+        {
+            if (!stopwatches.TryGetValue(method, out var stopwatch))
+            {
+                stopwatches[method] = stopwatch = new Stopwatch();
+            }
+            return stopwatch;
+        }
         public static float SecondsElapsed(this Stopwatch stopwatch)
         {
             return (float)stopwatch.ElapsedTicks / Stopwatch.Frequency;
@@ -48,7 +62,7 @@ namespace StartupProfiler
         }
 
 
-        public static ConcurrentDictionary<MethodBase, StopwatchData> stopwatches = new ConcurrentDictionary<MethodBase, StopwatchData>();
+        public static ConcurrentDictionary<MethodBase, StopwatchData> harmonyPatchStopwatches = new ConcurrentDictionary<MethodBase, StopwatchData>();
         public static HarmonyMethod profilePrefix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPrefix)));
         public static HarmonyMethod profilePostfix = new HarmonyMethod(AccessTools.Method(typeof(StartupImpactProfiling), nameof(ProfileMethodPostfix)));
         private static void ProfileMethod(MethodBase methodInfo)
@@ -76,9 +90,9 @@ namespace StartupProfiler
         }
         public static void ProfileMethodPrefix(MethodBase __originalMethod, out StopwatchData __state)
         {
-            if (stopwatches.TryGetValue(__originalMethod, out __state) is false)
+            if (harmonyPatchStopwatches.TryGetValue(__originalMethod, out __state) is false)
             {
-                stopwatches[__originalMethod] = __state = new StopwatchData(__originalMethod);
+                harmonyPatchStopwatches[__originalMethod] = __state = new StopwatchData(__originalMethod);
             }
             __state.Start();
         }

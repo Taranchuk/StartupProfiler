@@ -20,7 +20,7 @@ namespace StartupProfiler
         public static void Postfix(ModContentPack __instance)
         {
             stopwatch.Stop();
-            ModImpactData.RegisterImpact(__instance, "XML Patches", "LoadPatches", stopwatch.SecondsElapsed());
+            ModImpactData.RegisterImpact(__instance, "XML Patches", "Loading XML files", stopwatch.SecondsElapsed());
             foreach (var patch in __instance.Patches)
             {
                 modsByPatches[patch.sourceFile] = __instance;

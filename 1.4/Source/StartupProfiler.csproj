@@ -64,10 +64,11 @@
   <ItemGroup>
     <Compile Include="HarmonyPatches\DirectXmlLoader_DefFromNode_Patch.cs" />
     <Compile Include="HarmonyPatches\HarmonyPatches_Profile.cs" />
-    <Compile Include="HarmonyPatches\LongEventHandler_UpdateCurrentSynchronousEvent_Patch.cs" />
+    <Compile Include="HarmonyPatches\LongEventHandler_RunEventFromAnotherThread_Patch.cs" />
     <Compile Include="HarmonyPatches\MainMenuOptionListing_Patch.cs" />
     <Compile Include="HarmonyPatches\ModContentPack_LoadDefs_Patch.cs" />
     <Compile Include="HarmonyPatches\ModContentPack_LoadPatches_Patch.cs" />
+    <Compile Include="HarmonyPatches\ProfileHugslibMods.cs" />
     <Compile Include="HarmonyPatches\ThreadLocalDeepProfiler_Output_Patch.cs" />
     <Compile Include="ModImpactData.cs" />
     <Compile Include="AbstractFilesystem_ClearAllCache_Patch.cs" />

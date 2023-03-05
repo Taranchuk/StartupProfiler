@@ -33,7 +33,7 @@ namespace StartupProfiler
                 stopwatch.Stop();
                 if (ModContentPack_LoadPatches_Patch.modsByPatches.TryGetValue(__instance.sourceFile, out var mod))
                 {
-                    ModImpactData.RegisterImpact(mod, "XML Patches", "PatchOperation.Apply", stopwatch.SecondsElapsed());
+                    ModImpactData.RegisterImpact(mod, "XML Patches", "XML patch operations: (" + __instance.sourceFile + ")", stopwatch.SecondsElapsed());
                 }
             }
         }

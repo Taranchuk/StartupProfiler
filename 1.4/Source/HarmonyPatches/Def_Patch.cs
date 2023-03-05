@@ -33,18 +33,22 @@ namespace StartupProfiler
             }
         }
 
-        public static Stopwatch stopwatch = new Stopwatch();
-        public static void Prefix()
+        public static void Prefix(MethodBase __originalMethod)
         {
+            var stopwatch = __originalMethod.GetStopwatch();
             stopwatch.Restart();
         }
-        public static void Postfix(Def __instance)
+        public static void Postfix(MethodBase __originalMethod, Def __instance)
         {
+            var stopwatch = __originalMethod.GetStopwatch();
             stopwatch.Stop();
-            var mod = __instance.modContentPack;
-            if (mod != null)
+            if (stopwatch.SecondsElapsed() >= 0.00001f)
             {
-                ModImpactData.RegisterImpact(mod, "Defs", "Def init", stopwatch.SecondsElapsed());
+                var mod = __instance.modContentPack;
+                if (mod != null)
+                {
+                    ModImpactData.RegisterImpact(mod, "Defs", "Def initializing (" + __originalMethod.FullMethodName() + ")", stopwatch.SecondsElapsed());
+                }
             }
         }
     }

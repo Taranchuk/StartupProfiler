@@ -36,28 +36,6 @@ namespace StartupProfiler
 			}
 		}
 
-        public string ModSummary()
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var category in impactByCategories.OrderByDescending(x => x.Value.Sum(y => y.Value)))
-            {
-                var categoryImpact = category.Value.Sum(x => x.Value);
-                if (categoryImpact >= MinCategoryImpactLogging)
-                {
-                    sb.AppendLine("\t" + category.Key + ": " + categoryImpact.ToString("0.###") + "s (total)");
-                    foreach (var subCategory in category.Value.OrderByDescending(x => x.Value))
-                    {
-                        if (subCategory.Value >= MinSubCategoryImpactLogging)
-                        {
-                            sb.AppendLine("\t\t" + subCategory.Key + " " + subCategory.Value.ToString("0.###") + "s");
-                        }
-                    }
-                }
-
-            }
-            return sb.ToString();
-        }
-
         public void RegisterImpact(string category, string subCategory, float impact)
         {
             if (impactByCategories.TryGetValue(category, out var data))
@@ -82,11 +60,14 @@ namespace StartupProfiler
 
         public static void RegisterImpact(ModContentPack mod, string category, string subCategory, float impact)
         {
-            if (!ModStartupReport.Summary.TryGetValue(mod, out ModImpactData modImpact))
+            LongEventHandler.ExecuteWhenFinished(delegate
             {
-                ModStartupReport.Summary[mod] = modImpact = new ModImpactData(mod);
-            }
-            modImpact.RegisterImpact(category, subCategory, impact);
+                if (!ModStartupReport.Summary.TryGetValue(mod, out ModImpactData modImpact))
+                {
+                    ModStartupReport.Summary[mod] = modImpact = new ModImpactData(mod);
+                }
+                modImpact.RegisterImpact(category, subCategory, impact);
+            });
         }
     }
 }
