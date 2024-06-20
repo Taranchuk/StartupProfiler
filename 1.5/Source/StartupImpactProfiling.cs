@@ -80,17 +80,31 @@ namespace StartupProfiler
                 if (methodInfo.IsStatic && methodInfo.Name.Contains("cctor"))
                 {
                     ProfileMethodPrefix(methodInfo, out var state);
-                    RuntimeHelpers.RunClassConstructor(methodInfo.DeclaringType.TypeHandle);
+                    try
+                    {
+                        RuntimeHelpers.RunClassConstructor(methodInfo.DeclaringType.TypeHandle);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Exception in Startup Profiler: " + ex.ToString());
+                    }
                     ProfileMethodPostfix(state);
                 }
                 else
                 {
-                    StartupProfilerMod.harmony.Patch(methodInfo, prefix: profilePrefix, postfix: profilePostfix);
+                    try
+                    {
+                        StartupProfilerMod.harmony.Patch(methodInfo, prefix: profilePrefix, postfix: profilePostfix);
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("Exception in Startup Profiler: " + ex.ToString());
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex.ToString());
+                Log.Error("Exception in Startup Profiler: " + ex.ToString());
             }
         }
 

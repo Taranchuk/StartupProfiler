@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<LanguageData>
+	<SI_Label>Startup Profiler</SI_Label>
+	<SP.TotalTimeProfiled>Total time profiled: {0}</SP.TotalTimeProfiled>
+	<SP.TopTimeConsumingMethodsListedBelow>Top time consuming methods are listed below:</SP.TopTimeConsumingMethodsListedBelow>
+</LanguageData>

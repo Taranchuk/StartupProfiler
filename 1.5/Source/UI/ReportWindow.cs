@@ -6,6 +6,7 @@ using Verse;
 using Verse.Sound;
 using RimWorld;
 using UnityEngine;
+using System.Threading;
 
 namespace StartupProfiler
 {
@@ -37,6 +38,13 @@ namespace StartupProfiler
 			summaryText = GetCachedSummaryText();
 			selectedMod = cachedModDatas.First();
             RegenerateReport();
+			//foreach (var  mod in cachedModDatas)
+			//{
+			//	if (mod.TotalImpactTime >= 0.5f)
+			//	{
+			//		Log.Message("<li>" + mod.mod.PackageId + "</li>");
+			//	}
+			//}
         }
 
         public override Vector2 InitialSize => new Vector2(1024, 768);

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Verse;
 using UnityEngine;
+using System.Threading;
 
 namespace StartupProfiler
 {
@@ -60,10 +61,14 @@ namespace StartupProfiler
 
         public static void RegisterImpact(ModContentPack mod, string category, string subCategory, float impact)
         {
-            LongEventHandler.ExecuteWhenFinished(delegate
+            if (mod.IsOfficialMod || mod == StartupProfilerMod.Instance.Content)
+            {
+                return;
+            }
+            if (StartupProfilerMod.thread == Thread.CurrentThread || UnityData.IsInMainThread)
             {
                 RegisterImpactThreadSafe(mod, category, subCategory, impact);
-            });
+            }
         }
 
         private static void RegisterImpactThreadSafe(ModContentPack mod, string category, string subCategory, float impact)
