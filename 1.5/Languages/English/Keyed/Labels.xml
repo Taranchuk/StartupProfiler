@@ -4,4 +4,6 @@
 	<SI_Label>Startup Profiler</SI_Label>
 	<SP.TotalTimeProfiled>Total time profiled: {0}</SP.TotalTimeProfiled>
 	<SP.TopTimeConsumingMethodsListedBelow>Top time consuming methods are listed below:</SP.TopTimeConsumingMethodsListedBelow>
+	<SP.CopyModList>Copy Mod List</SP.CopyModList>
+	<SP.ModListCopied>Mod list copied to clipboard.</SP.ModListCopied>
 </LanguageData>
